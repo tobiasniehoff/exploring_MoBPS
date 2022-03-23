@@ -360,3 +360,143 @@ get.direct.ancestors <- function(population,
 # get.direct.ancestors(population=population, 
 #                      cohorts = "Cohort_6_F", 
 #                      depth.pedigree = 2)
+
+
+# this returns a database with each animal on a single row
+# get.full.database(pop, gen = 2)
+# get.database(pop, gen = 2)
+# get.database(pop, gen = 2, avoid.merging = T)
+get.full.database <- function(population, database=NULL, gen=NULL,
+                              cohorts=NULL, id=NULL){
+  database <- get.database(population, gen = gen, database = database, 
+                           cohorts = cohorts, id=id)
+  
+  out.db <- c()
+  for(i in 1:nrow(database)){
+    if(database[i, 3] == database[i, 4]){
+      out.db <- rbind(out.db, database[i,])
+    } else{
+      animal_numbers <- database[i, 3]:database[i, 4]
+      new_chunk <- cbind(matrix(database[i,1:2], ncol = 2, 
+                                nrow = length(animal_numbers), 
+                                byrow = T), animal_numbers, animal_numbers)
+      out.db <- rbind(out.db, new_chunk)
+    }
+  }
+  
+  return(out.db)
+}
+#get.full.database(pop, bve.db)
+
+# this function is for retrieving the parental average
+# you can chose between ebv, bv and pheno
+get.parental.average <- function(population, value = "ebv", 
+                                 database=NULL,
+                                 gen=NULL, cohorts=NULL,
+                                 id = T){
+  
+  # for value, you can use, pheno, ebv or bv
+  database <- get.database(population, gen = gen, database = database, 
+                           cohorts = cohorts)
+  
+  pop <- population
+  
+  ped <- get.pedigree(pop, database = database, id = T)
+  ped_ebv <- ped
+  
+  dbf <- get.database(pop, id = ped[,2])
+  namf <- as.integer(colnames(get.bve(pop, database = dbf, use.id = T)))
+  if(value == "ebv"){bvef <- get.bve(pop, database = dbf, use.id = T)}
+  if(value == "pheno"){bvef <- get.pheno(pop, database = dbf, use.id = T)}
+  if(value == "bv"){bvef <- get.bv(pop, database = dbf, use.id = T)}
+  ped_ebv[,2] <- bvef[match(ped[,2], namf)]
+  
+  dbm <- get.database(pop, id = ped[,3])
+  namm <- as.integer(colnames(get.bve(pop, database = dbm, use.id = T)))
+  if(value == "ebv"){bvem <- get.bve(pop, database = dbm, use.id = T)}
+  if(value == "pheno"){bvem <- get.pheno(pop, database = dbm, use.id = T)}
+  if(value == "bv"){bvem <- get.bv(pop, database = dbm, use.id = T)}
+  ped_ebv[,3] <- bvem[match(ped[,3], namm)]
+  
+  ped_ebv[,1] <- (ped_ebv[,2] + ped_ebv[,3])/2
+  if(!id){ped <- get.pedigree(pop, database = database)}
+  
+  out <- cbind(ped, ped_ebv)
+  return(out)
+}
+
+# this function returns corrected bvs (true breeding values)
+# Correction can be done by generation.mean or parental.mean. Correction basically means
+# that the parent average is substracted from the tbv
+# corrected bvs may be of use for certain types of variance estimation
+get.corrected.bv <- function(population, database=NULL, gen=NULL,
+                             cohorts=NULL, correct.by = "generation.mean"){
+  database <- get.database(population, gen = gen, database = database, 
+                           cohorts = cohorts)
+  # for correct.by, options are
+  # cohort.mean (correcting by the mean of the cohort)
+  # and parental.mean (correcting by the parental average of every individual). It 
+  # is possible that this option won't work if there are more than one traits
+  # and generation.mean
+  corr_tbv <- c()
+  
+  ### don't use this option for now. It does seem well implemented
+  if(correct.by == "cohort.mean"){
+    for(i in 1:nrow(database)){
+      tbv <- get.bv(population, database[i,])
+      corr_tbv <- cbind(corr_tbv, tbv - rowMeans(tbv))
+    }
+  }
+  if(correct.by == "parental.mean"){
+    tbv <- get.bv(population, database)
+    p_av <- get.parental.average(population, database = database, value = "bv", id = T)
+    corr_tbv <- tbv - p_av[,4]
+  }
+  if(correct.by == "generation.mean"){
+    for(i in sort(unique(database[,1]))){
+      tbv <- get.bv(population, database = database[database[,1] == i,])
+      tbv_gen <- get.bv(population, gen = i)
+      corr_tbv <- cbind(corr_tbv, tbv - rowMeans(tbv_gen))
+    }
+  }
+  return(corr_tbv)
+}
+# var(get.corrected.bv(population.breeding.cycle, gen = 5:15)[1,])
+# var(get.corrected.bv(population.breeding.cycle, gen = 5:15, correct.by = "cohort_mean")[1,])
+# var(get.corrected.bv(population.breeding.cycle, gen = 5:15, correct.by = "parental.mean")[1,])
+
+# similar reasoning as for function get.corrected.bv()
+get.corrected.bve <- function(population, database=NULL, gen=NULL,
+                             cohorts=NULL, correct.by = "generation.mean"){
+  database <- get.database(population, gen = gen, database = database, 
+                           cohorts = cohorts)
+  # for correct.by, options are
+  # cohort.mean (correcting by the mean of the cohort)
+  # and parental.mean (correcting by the parental average of every individual). It 
+  # is possible that this option won't work if there are more than one traits
+  corr_tbv <- c()
+  
+    ### don't use this option for now. It does seem well implemented
+  if(correct.by == "cohort.mean"){
+    for(i in 1:nrow(database)){
+      tbv <- get.bve(population, database[i,])
+      corr_tbv <- cbind(corr_tbv, tbv - rowMeans(tbv))
+    }
+  }
+  if(correct.by == "parental.mean"){
+    tbv <- get.bve(population, database)
+    p_av <- get.parental.average(population, database = database, value = "ebv", id = T)
+    corr_tbv <- tbv - p_av[,4]
+  }
+  if(correct.by == "generation.mean"){
+    for(i in sort(unique(database[,1]))){
+      tbv <- get.bve(population, database = database[database[,1] == i,])
+      tbv_gen <- get.bve(population, gen = i)
+      corr_tbv <- cbind(corr_tbv, tbv - rowMeans(tbv_gen))
+    }
+  }
+  return(corr_tbv)
+}
+# var(get.corrected.bve(population.breeding.cycle, gen = 5:15)[1,])
+# var(get.corrected.bve(population.breeding.cycle, gen = 5:15, correct.by = "cohort_mean")[1,])
+# var(get.corrected.bve(population.breeding.cycle, gen = 5:15, correct.by = "parental.mean")[1,])
