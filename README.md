@@ -1,14 +1,21 @@
+# Why this repository?
+I am working with MoBPS all the time and wanted to have a place to share code and ideas. It can take a while to set up your idea. I hope that this repository can help or give inspiration especially when you are just starting working with MoBPS.
+
+# My motivation:
+I am interested in having as many people as possible using MoBPS. This ensures continued development which benefits all users. With this repository, I want to help help increasing the user base. I see MoBPS as the best tool for breeding program simulation for my projects. 
+Please reach out if you want to have a chat.
+
 # exploring_MoBPS
 Example scipts and additional functions using [MoBPS](https://github.com/tpook92/MoBPS).
 This respository is meant to share scripts and functions that have been built with and/or for MoBPS. Contributions will mostly be related to animal breeding. I will upload something every now and then from my own projects. I do not guarantee that code will work as described or intended and always recommend testing it for your own purposes.
 
-Please et me know if you spot mistakes, have questions or just want to say Hi! :)
+Please contact me know if you spot mistakes, have questions or just want to say Hi! :)
 
 ## Scripts
 This is a collection of scripts of things you can do with MoBPS.
 
 **`connectedness_population.R`**
-- This scripts simulate a breeding program that is having two separate herds. Some semen is exchanged between the herds every generation. This is implemented as such: e.g. 10% of all father for herd A are from herd B. These sires are the very best ones in herd B. And the same is done for sired for herd B. The script calculates and plots the average true breeding value and the Fst value. I have not seen a huge population differentiation during development.
+- This script simulates a breeding program that is having two separate herds. Some semen is exchanged between the herds every generation. This is implemented as such: e.g. 10% of all father for herd A are from herd B. These sires are the very best ones in herd B. And the same is done for sires of herd B. The script calculates and plots the average true breeding value and the Fst value. I have not seen a huge population differentiation during development.
 
 **`simulate_population_history_Jibrila_et_al_2020.R`**
 - This script simulates a historic population as described in [Jibrila et al. \(2020\)](https://doi.org/10.1186/s12711-020-00562-6). Comments are made in the script. In brief, a random mating population is simulated over 3000 generations with changes in population size. This script could run on my laptop and needed some hours to finish.
