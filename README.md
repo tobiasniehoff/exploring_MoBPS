@@ -17,9 +17,21 @@ This is a collection of scripts of things you can do with MoBPS.
 ## Functions
 This folder contains functions made for and/or with MoBPS. Some functionality may be incorporated in future MoBPS versions. The fuctions are described more in the file. Examples are given at the end of function definitions.
 
-**`get.direct.ancestors`**
+**`get.direct.ancestors()`**
 - Gives you a pedigree containing all ancestors up to a given number of generations back. 
 
-**`min.coanc.mating`**
+**`min.coanc.mating()`**
 - This function does minimum coancestry mating. It is a wrapper around the function `matings()` of the package [`optiSel`](https://doi.org/10.1186/s12859-018-2450-5). It uses pedigree relationship and assumes equal contributions within sex. Using `Rsymphony::Rsymphony_solve_LP` is way faster than using the default solver and is less prone to fail. Installing `RSymphony` on the cluster is a nightmare. I found that using `lpsymphony` is easier to [install](https://www.bioconductor.org/packages/release/bioc/html/lpsymphony.html) and does the same.
 If no solver works or you don't want to wait, my personal suggestion is to use the `avoid.mating.fullsib` and `avoid.mating.halfsib` functionality in MoBPS as most inbreeding and reduction in within family variance can be expected from such crosses. I think this is discussed in [Sonesson & Meuwissen (2000)](https://doi.org/10.1186/1297-9686-32-3-231).
+
+**`get.full.database()`**
+- This function returns a database with every animal on a single row, i.e., the number of rows is identical to the number of animal in the database. This database makes some handeling easier. It is acceptable by all MoBPS functions. I have not tested the case where clones or copies are used but I suspect that it would work the same.
+
+**`get.parental.average()`**
+- This function returns the parental average of every individual. The average of phenotypesm estimated breeding values and true breeding values can be calculated by specifying "pheno", "ebv" or "bv". I have only tested this function for the case that one trait is used and only one phenotype record of that tait is available per animal. **Attention plant breeders:** the output will not be meaningful for you if the plant of interest are derived by selfing. If you have selfed plants, you probably want to make sure that the original lines that were used to create the F1 are use to derive th parental average. This is ***not*** yet implemented.
+
+**`get.corrected.bv()`**
+- This function returns the corrected bvs of animals. Options to correct by are "generation.mean" and "parental.mean". For some cases, the genetic variance based on corrected breeding values (here: true breeding values) is of interest. I have not tested this function for multiple traits. internally, it calls `get.parental.average()`.
+
+**`get.corrected.bve()`**
+- This function works the same as `get.corrected.bv()` - just for estimated breeding values.
