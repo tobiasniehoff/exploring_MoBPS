@@ -5,7 +5,7 @@ I am working with MoBPS all the time and wanted to have a place to share code an
 I am interested in having as many people as possible using MoBPS. This ensures continued development which benefits all users. With this repository, I want to help help increasing the user base. I see MoBPS as the best tool for breeding program simulation for my projects. 
 Please reach out if you want to have a chat.
 
-# exploring_MoBPS
+# What is this repository?
 Example scipts and additional functions using [MoBPS](https://github.com/tpook92/MoBPS).
 This respository is meant to share scripts and functions that have been built with and/or for MoBPS. Contributions will mostly be related to animal breeding. I will upload something every now and then from my own projects. I do not guarantee that code will work as described or intended and always recommend testing it for your own purposes.
 
