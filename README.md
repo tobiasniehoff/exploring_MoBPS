@@ -11,6 +11,28 @@ This respository is meant to share scripts and functions that have been built wi
 
 Please contact me know if you spot mistakes, have questions or just want to say Hi! :)
 
+## Version
+- MoBPS actions can be sped up with the packages `miraculix` [https://rdrr.io/cran/miraculix/src/R/auxiliary.R](https://rdrr.io/cran/miraculix/src/R/auxiliary.R) and `RandomFieldUtils` [https://cran.r-project.org/web/packages/RandomFieldsUtils/index.html](https://cran.r-project.org/web/packages/RandomFieldsUtils/index.html). Certain versions of the packages do not work on Windoes or Linux. This might change in the future as the packages are actively developed. For now, the most recent stable versions for <br/>
+ **Windows**:<br/>
+ `RandomFieldsUtils_0.6.6`<br/>
+ `miraculix_1.0.0.1`<br/>
+ **Linux**:<br/>
+ `RandomFieldsUtils_1.0.6`<br/>
+ `miraculix_1.0.5`
+ 
+ These versions can be downloaded on Torsten's MoBPS GitHub page [https://github.com/tpook92/MoBPS](https://github.com/tpook92/MoBPS).
+ 
+ ```
+Installation on Linux:
+install.packages("MoBPS_1.8.07.tar.gz", repos = NULL, type = "source")
+install.packages("RandomFieldsUtils_1.0.6.tar.gz", repos = NULL, type = "source")
+install.packages("miraculix_1.0.5.tar.gz", repos = NULL, type = "source")
+```
+**NOTE** MoBPS is continously updated. Thus, some scripts may not work with a certain version of MoBPS. I try my best to always mention the version with which a script was tested in the `.R` files.
+
+## Exercises
+The excercises in this section are partially my own or from the MoBPS workshop by Torsten Pook. Code, solutions and comments are my own.
+
 ## Scripts
 This is a collection of scripts of things you can do with MoBPS.
 
