@@ -34,7 +34,7 @@ install.packages("miraculix_1.0.5.tar.gz", repos = NULL, type = "source")
 The excercises in this section are partially my own or from the MoBPS workshop by Torsten Pook. Code, solutions and comments are my own. Note that there is not one solution only to implement a program in MoBPS.
 
 ### Hybrid breeding
-You will learn how to read in real marker data from vcf files, create traits and add restrictions to matings. The file with solutions is called `task6_solution_hybrid_breeding.R`. This excerise is adapted from the MoBPS workshop (March 2022). 
+You will learn how to read in real marker data from vcf files, create traits and add restrictions to matings. The file with solutions is called **`task6_solution_hybrid_breeding.R`**. This excerise is adapted from the MoBPS workshop (March 2022). 
 - Generate a founder population with 10 individuals from two different gene pools
 - Genotypic data for the individuals is given via Pool1.vcf and Pool2.vcf
 - Add three traits:<br/>
@@ -49,7 +49,7 @@ You will learn how to read in real marker data from vcf files, create traits and
 - Generate a PCA for all simulated individuals
 
 ### Breeding value estimation
-You will learn how to do PBLUP, GBLUP and ssGBLUP in MoBPS and how to use different marker arrays in bve. The file with solutions is called `task7_solution_BreedingValueEstimation.R`. This excerise is adapted from the MoBPS workshop (March 2022). This excercise  is split into two subparts. If you are struggling with the first part you can load in the `.Rdata` object with an already generated population<br/>
+You will learn how to do PBLUP, GBLUP and ssGBLUP in MoBPS and how to use different marker arrays in bve. The file with solutions is called **`task7_solution_BreedingValueEstimation.R`**. This excerise is adapted from the MoBPS workshop (March 2022). This excercise  is split into two subparts. If you are struggling with the first part you can load in the `.Rdata` object with an already generated population<br/>
 - Generate a population list with 12 generations:<br/>
     - Each generation contains 50 males, 50 female with parents of the previous generation<br/>
     - Use a genetic map with 25.000 SNPs, 5 chromosomes with a length of 3 Morgan each
@@ -67,14 +67,13 @@ You will learn how to do PBLUP, GBLUP and ssGBLUP in MoBPS and how to use differ
 - Generate a plot to showcase real genomic values and breeding values for generation 10
 
 ### Offspring phenotypes
-You will learn how to use offspring phenotypes. This is useful in cases the animal of interest (e.g. a rooster) does not have a phenotype (e.g. total egg mass). The file with solutions is called `task8_solution_OffpringPhenotypes.R`. This excerise is adapted from the MoBPS workshop (March 2022).
+You will learn how to use offspring phenotypes. This is useful in cases the animal of interest (e.g. a rooster) does not have a phenotype (e.g. total egg mass). The file with solutions is called **`task8_solution_OffpringPhenotypes.R`**. This excerise is adapted from the MoBPS workshop (March 2022).
 - Simulate a population with 10 male individuals and 90 female individuals
 - Generate a single trait with 1000 purely additive QTL
 - Generate 45 male and 45 female offspring
 - Generate phenotypes for all female offspring
 - Calculate the average phenotype of the offspring from each respective founder
 - As comparison perform a breeding value estimation and compare which of the two selection criteria is more suited to estimate the underlying true genomic value
-
 
 ## Scripts
 This is a collection of scripts of things you can do with MoBPS.
