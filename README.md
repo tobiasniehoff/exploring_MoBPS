@@ -31,7 +31,50 @@ install.packages("miraculix_1.0.5.tar.gz", repos = NULL, type = "source")
 **NOTE** MoBPS is continously updated. Thus, some scripts may not work with a certain version of MoBPS. I try my best to always mention the version with which a script was tested in the `.R` files.
 
 ## Exercises
-The excercises in this section are partially my own or from the MoBPS workshop by Torsten Pook. Code, solutions and comments are my own.
+The excercises in this section are partially my own or from the MoBPS workshop by Torsten Pook. Code, solutions and comments are my own. Note that there is not one solution only to implement a program in MoBPS.
+
+### Hybrid breeding
+You will learn how to read in real marker data from vcf files, create traits and add restrictions to matings. The file with solutions is called `task6_solution_hybrid_breeding.R`. This excerise is adapted from the MoBPS workshop (March 2022). 
+- Generate a founder population with 10 individuals from two different gene pools
+- Genotypic data for the individuals is given via Pool1.vcf and Pool2.vcf
+- Add three traits:<br/>
+- One with 10 purely additive QTLs<br/>
+– One with 1000 purely additive QTLs<br/>
+– One with 500 purely additive QTLs and 500 dominant QTLs of equal size<br/>
+– Traits should be uncorrelated<br/>
+– For all traits phenotypic mean for the founders should be 100 with a variance of 5<br/>
+- Generate 100 offspring by random mating between individuals from the two gene pools
+- Compare the genomic values of the parents and offspring
+- How often was each individual used for reproduction?
+- Generate a PCA for all simulated individuals
+
+### Breeding value estimation
+You will learn how to do PBLUP, GBLUP and ssGBLUP in MoBPS and how to use different marker arrays in bve. The file with solutions is called `task7_solution_BreedingValueEstimation.R`. This excerise is adapted from the MoBPS workshop (March 2022). This excercise  is split into two subparts. If you are struggling with the first part you can load in the `.Rdata` object with an already generated population<br/>
+- Generate a population list with 12 generations:<br/>
+    - Each generation contains 50 males, 50 female with parents of the previous generation<br/>
+    - Use a genetic map with 25.000 SNPs, 5 chromosomes with a length of 3 Morgan each
+    - Generate a trait with heritability of 0.3 and 1‘000 purely additive QTLs
+    - Make sure that:
+        - In generation 10 only males are phenotyped
+        - In generation 11 & 12 all individuals are phenotyped
+        - In generation 10 & 11 all individuals are genotyped
+        - In generation 12 only 20% of all individuals are genotyped
+- Perform breeding value estimations for individuals in generation 10, 11, 12 or combinations of the cohorts. Use:
+    - Genomic breeding value estimation
+    - Pedigree based breeding value estimation
+    - Single step
+    - Assume individuals are only genotyped for 10‘000 / 100 randomly selected markers
+- Generate a plot to showcase real genomic values and breeding values for generation 10
+
+### Offspring phenotypes
+You will learn how to use offspring phenotypes. This is useful in cases the animal of interest (e.g. a rooster) does not have a phenotype (e.g. total egg mass). The file with solutions is called `task8_solution_OffpringPhenotypes.R`. This excerise is adapted from the MoBPS workshop (March 2022).
+- Simulate a population with 10 male individuals and 90 female individuals
+- Generate a single trait with 1000 purely additive QTL
+- Generate 45 male and 45 female offspring
+- Generate phenotypes for all female offspring
+- Calculate the average phenotype of the offspring from each respective founder
+- As comparison perform a breeding value estimation and compare which of the two selection criteria is more suited to estimate the underlying true genomic value
+
 
 ## Scripts
 This is a collection of scripts of things you can do with MoBPS.
@@ -64,3 +107,12 @@ If no solver works or you don't want to wait, my personal suggestion is to use t
 
 **`get.corrected.bve()`**
 - This function works the same as `get.corrected.bv()` - just for estimated breeding values.
+
+## General remarks
+- Simulation tools, also MoBPS, offer the user to input heritabilities which is then used together with either the environmental or the genetic variance to derive the genetic or the environmental variance, respectively. This is coming from a way of thinking that that a heritability is a property of a trait. However, a heritability is a property of the environment AND the population. This is important in simulations when following a population over generations. Assume your breeding program is constantly increasing a trait. Assume the heritability was estimated based on a single generation and this is the heritability you want to use in simulation or e.g. phenotypes. 
+There are two problems:
+- 1) When simulating phenotypes, a tool (including MoBPS) would derive the true genetic variance (which is known to the tool). Together with the heritability, the environmental variance will be estimated. The environmental variance is then used to draw random error effects. When simulating many generations, the genetic variance can be expected to decrease. In a real population, we would also assume the heritability to decrease. With the approach explained here, the simulation tool would however also decrease the environmental variance. This can be avoided in MoBPS by providing the environmental standard deviation instead of the heritbaility when phenotyping. It should be noted though, that unless you use ridiculously small population sizes, the genetic variance probably does not change much in only a few generations.
+- 2) Again, assume the used heritability is estimated based on a single generation. Now, if you want to phenotype several generations at once, the simulation tool will overestimate the genetic variance and in turn also the environmental variance. This is because the generations have different means for the trait. To avoid this problem, one can use the parameter `variance.correction` in MoBPS. In most cases, it is probably bets to chose `generation.mean` instead of `parental.mean`. The latter corrects "too much" and removes the part of the variance that is due to the mating strategy. Alternatively, one could provide the environmental variance directly for drawing random effects. The problem is visualized in the figure ![variance problem](https://github.com/tobiasniehoff/exploring_MoBPS/problem_variances.png).
+
+Sidenote: I am currently pondering about environmental variances. Imagine this: Your population has quite a low mean, say 10. The environmental standard deviation in this population is, say 4. After many generations, the trait was increased to 10,000. Would the population then still have an environmental sd of 4 or would it increase? 
+The question behind this is whether the variance is relative to the tbv or not. If you know the answer or have experience, please contact me.
