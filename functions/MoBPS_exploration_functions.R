@@ -500,3 +500,50 @@ get.corrected.bve <- function(population, database=NULL, gen=NULL,
 # var(get.corrected.bve(population.breeding.cycle, gen = 5:15)[1,])
 # var(get.corrected.bve(population.breeding.cycle, gen = 5:15, correct.by = "cohort_mean")[1,])
 # var(get.corrected.bve(population.breeding.cycle, gen = 5:15, correct.by = "parental.mean")[1,])
+
+# this function checks what proportion of the genome of animals in group 1
+# are derived from animals in group 2
+# So, if the second group contains animals from only one breed, this is like
+# asking for the breed proportion of every animal
+# Animals in group 2 MUST be founders. 
+# I assume that both chromosomes of founder aniamls belong to the same breed, i.e.,
+# the founders/group2 is purebred
+# the outputted value is the proportion of the genome of an animal in group 1 that 
+# can be traced back to animals of group 2
+get.breed.proportion <- function(population, 
+                                 database1 = NULL, gen1 = NULL, cohorts1 = NULL,
+                                 database2 = NULL, gen2 = NULL, cohorts2 = NULL,
+                                 use.id = FALSE){
+  database1 <- get.full.database(population, gen = gen1, 
+                                 database = database1, cohorts = cohorts1)
+  database2 <- get.full.database(population, gen = gen2, 
+                                 database = database2, cohorts = cohorts2)
+  id.db2 <- get.id(population, database = database2, use.id = T)
+  
+  recomb <- get.recombi(population, database = database1)
+  chrom.len <- max(recomb[[1]][[1]]) - min(recomb[[1]][[1]])
+  
+  out <- get.id(population = population, database = database1)
+  for(ind in 1:length(recomb)){
+    len <- 0
+    for(hap in 3:4){
+      len.hap <- 0
+      contributing.founders <- recomb[[ind]][[hap]]
+      segments <- recomb[[ind]][[hap-2]]
+      
+      for(segment in 2:length(segments)){
+        len.seg <- diff(segments[c(segment-1, segment)])
+        # if the contributing founder of this segment is in the 2nd database, then TRUE
+        if(get.id(population, 
+                  database = contributing.founders[segment-1,-4, drop=F], 
+                  use.id = T) %in% id.db2){
+          len.hap <- len.hap+len.seg
+        }
+      }
+      len <- len + len.hap
+    }
+    out[ind] <- (len/2)/chrom.len
+  }
+  return(out)
+}
+#get.breed.proportion(population, gen1=9, cohort = c("BreedA_2_M", "BreedA_2_F"))
