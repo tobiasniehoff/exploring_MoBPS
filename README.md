@@ -9,6 +9,12 @@ Please reach out if you want to have a chat.
 Example scipts and additional functions using [MoBPS](https://github.com/tpook92/MoBPS).
 This respository is meant to share scripts and functions that have been built with and/or for MoBPS. Contributions will mostly be related to animal breeding. I will upload something every now and then from my own projects. I do not guarantee that code will work as described or intended and always recommend testing it for your own purposes.
 
+There are 4 sections in this repo:
+- **Exercises**: Here you cna find exercises for practice. Th ecorresponding folder contains my solutions.
+- **Scripts**: Here you can find scripts of my previous projects or examples for some implementations.
+- **Functions**: Here, only the folder is relevant. You can find functions that extend the functionality of MoBPS.
+- **General remarks**: This section does not contain code. I am commenting on open questions I have or give general recommendations.
+
 Please contact me know if you spot mistakes, have questions or just want to say Hi! :)
 
 ## Version
@@ -78,6 +84,11 @@ You will learn how to use offspring phenotypes. This is useful in cases the anim
 ## Scripts
 This is a collection of scripts of things you can do with MoBPS.
 
+**`cross_breeding_breed_specifc_effects.R`**
+- In this script, I explore how one can simulate crossbreeding when the known effect sizes for alleles differ per breed/population. This is the case when they are estimated separately per breed and one wanted to use the "real" estimated allele effects as input for simulation. The way this is implemented here, is by placing a SNP for breed A on the same position as for breed B. note that for this only the genetic position (cM) not the physical position (bp) matters. Thus, an animal can only have one SNP - either the one from breed A or from breed B. Then, the allele frequency for the SNP from breed B is set to 0 in breed A aniamls and vice versa. In breeding value evalutations, an array conataining both SNPs is needed. For other genomic evaluations, make sure you use the appropriate marker array.<br/>
+The scripts further explores how selection changes breed proportions in a crossbred population.<br/>
+This script is complicated. Compatibility with other MoBPS functions is not guaranteed.
+
 **`connectedness_population.R`**
 - This script simulates a breeding program that is having two separate herds. Some semen is exchanged between the herds every generation. This is implemented as such: e.g. 10% of all father for herd A are from herd B. These sires are the very best ones in herd B. And the same is done for sires of herd B. The script calculates and plots the average true breeding value and the Fst value. I have not seen a huge population differentiation during development.
 
@@ -106,6 +117,9 @@ If no solver works or you don't want to wait, my personal suggestion is to use t
 
 **`get.corrected.bve()`**
 - This function works the same as `get.corrected.bv()` - just for estimated breeding values.
+
+**`get.breed.proportion`**
+- This function checks what proportion of the genome of an animal is derived from a specific group of founders. If the group of founder is chosen to contain all but only animals from a certain breed/poplation, the value given as output is the breed proportion. The function only works if the animals in group 2 contain only founder animals.
 
 ## General remarks
 -Simulation tools, also MoBPS, offer the user to input heritabilities which is then used together with either the environmental or the genetic variance to derive the genetic or the environmental variance, respectively. This is coming from a way of thinking that that a heritability is a property of a trait. However, a heritability is a property of the environment AND the population. This is important in simulations when following a population over generations. Assume your breeding program is constantly increasing a trait. Assume the heritability was estimated based on a single generation and this is the heritability you want to use in simulation or e.g. phenotypes. 
