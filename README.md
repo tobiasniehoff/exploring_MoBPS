@@ -85,9 +85,10 @@ You will learn how to use offspring phenotypes. This is useful in cases the anim
 This is a collection of scripts of things you can do with MoBPS.
 
 **`cross_breeding_breed_specifc_effects.R`**
-- In this script, I explore how one can simulate crossbreeding when the known effect sizes for alleles differ per breed/population. This is the case when they are estimated separately per breed and one wanted to use the "real" estimated allele effects as input for simulation. The way this is implemented here, is by placing a SNP for breed A on the same position as for breed B. note that for this only the genetic position (cM) not the physical position (bp) matters. Thus, an animal can only have one SNP - either the one from breed A or from breed B. Then, the allele frequency for the SNP from breed B is set to 0 in breed A aniamls and vice versa. In breeding value evalutations, an array conataining both SNPs is needed. For other genomic evaluations, make sure you use the appropriate marker array.<br/>
+- In this script, I explore how one can simulate crossbreeding when the known effect sizes for alleles differ per breed/population. This is the case when they are estimated separately per breed (i.e., the effect size of allele A in breed A is different from the effect size of allele A in breed B) and one wants to use the "real" estimated allele effects as input for simulation. The way this is implemented here, is by placing a SNP for breed A on the same position as for breed B. Note that for this only the genetic position (cM), not the physical position (bp) matters. Thus, an animal can only have one allele at a locus - either the one from breed A or from breed B because no recombination can happend between them. Then, the allele frequency for the SNP from breed B is set to 0 in breed A animals and vice versa. In breeding value evalutations, an array conataining both SNPs is needed. For other genomic evaluations, make sure you use the appropriate marker array.<br/>
+Note that MoBPS does not have a built in strategy to consider the breed-origin-of-alleles in breeding value estimation. For an extensive review on considering crossbreed data in genomic prediction (also covering the inclusion of the breed-of-origin for alleles), please see [Duenk et al. \(2021\)](https://doi.org/10.1093/jas/skab205).<br/>
 The scripts further explores how selection changes breed proportions in a crossbred population.<br/>
-This script is complicated. Compatibility with other MoBPS functions is not guaranteed.
+This method is complicated. Compatibility with other MoBPS functions is not guaranteed.
 
 **`connectedness_population.R`**
 - This script simulates a breeding program that is having two separate herds. Some semen is exchanged between the herds every generation. This is implemented as such: e.g. 10% of all father for herd A are from herd B. These sires are the very best ones in herd B. And the same is done for sires of herd B. The script calculates and plots the average true breeding value and the Fst value. I have not seen a huge population differentiation during development.
@@ -118,7 +119,7 @@ If no solver works or you don't want to wait, my personal suggestion is to use t
 **`get.corrected.bve()`**
 - This function works the same as `get.corrected.bv()` - just for estimated breeding values.
 
-**`get.breed.proportion`**
+**`get.breed.proportion()`**
 - This function checks what proportion of the genome of an animal is derived from a specific group of founders. If the group of founder is chosen to contain all but only animals from a certain breed/poplation, the value given as output is the breed proportion. The function only works if the animals in group 2 contain only founder animals.
 
 ## General remarks
