@@ -72,6 +72,17 @@ You will learn how to do PBLUP, GBLUP and ssGBLUP in MoBPS and how to use differ
     - Assume individuals are only genotyped for 10‘000 / 100 randomly selected markers
 - Generate a plot to showcase real genomic values and breeding values for generation 10
 
+### Index selection
+You will use how to do selection with an index for multiple traits. Index selection is done in most contemporary breeding programs. In this exercise, selection should be done for an arbitrary index comprised of 3 correlated traits. The file with solutions is called **`index_selection.R`**.
+- Simulate a population with 5000 SNPs on 28 chromosomes and 300 individuals
+- Create 3 traits and make up some genetic correlations. Create the correlation matrix.
+- Make up some genetic variances and heritabilities. Based on both, calculate error variance.
+- Add the three traits to the population. Each trait should have 1000 causla additive loci.
+- Compare your input correlation matrix with the correlation in the population.
+- Let the population mate randomly for some generations to build up some LD.
+- Do a PBLUP breeding value estimation based on phenotypes from only females.
+- Do index selection for all animals in the last generation based on ebvs. Pay attention to the variance you standardize ebvs with.
+
 ### Offspring phenotypes
 You will learn how to use offspring phenotypes. This is useful in cases the animal of interest (e.g. a rooster) does not have a phenotype (e.g. total egg mass). The file with solutions is called **`task8_solution_OffpringPhenotypes.R`**. This excerise is adapted from the MoBPS workshop (March 2022).
 - Simulate a population with 10 male individuals and 90 female individuals
