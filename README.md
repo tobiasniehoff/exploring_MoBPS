@@ -1,21 +1,26 @@
 # Why this repository?
 I am working with MoBPS all the time and wanted to have a place to share code and ideas. It can take a while to set up your idea. I hope that this repository can help or give inspiration especially when you are just starting working with MoBPS.
 
+<!-- 
 # My motivation:
 I am interested in having as many people as possible using MoBPS. This ensures continued development which benefits all users. With this repository, I want to help help increasing the user base. I see MoBPS as the best tool for breeding program simulation for my projects. 
 Please reach out if you want to have a chat.
+-->
 
 # What is this repository?
 Example scipts and additional functions using [MoBPS](https://github.com/tpook92/MoBPS).
 This respository is meant to share scripts and functions that have been built with and/or for MoBPS. Contributions will mostly be related to animal breeding. I will upload something every now and then from my own projects. I do not guarantee that code will work as described or intended and always recommend testing it for your own purposes.
 
-There are 4 sections in this repo:
+There are 3 sections in this repo:
 - **Exercises**: Here you cna find exercises for practice. Th ecorresponding folder contains my solutions.
 - **Scripts**: Here you can find scripts of my previous projects or examples for some implementations.
 - **Functions**: Here, only the folder is relevant. You can find functions that extend the functionality of MoBPS.
+<!--
 - **General remarks**: This section does not contain code. I am commenting on open questions I have or give general recommendations.
-
+-->
+<!-- 
 Please contact me know if you spot mistakes, have questions or just want to say Hi! :)
+-->
 
 ## Version
 - MoBPS actions can be sped up with the packages `miraculix` [https://rdrr.io/cran/miraculix/src/R/auxiliary.R](https://rdrr.io/cran/miraculix/src/R/auxiliary.R) and `RandomFieldUtils` [https://cran.r-project.org/web/packages/RandomFieldsUtils/index.html](https://cran.r-project.org/web/packages/RandomFieldsUtils/index.html). Certain versions of the packages do not work on Windoes or Linux. This might change in the future as the packages are actively developed. For now, the most recent stable versions for <br/>
@@ -107,9 +112,19 @@ This method is complicated. Compatibility with other MoBPS functions is not guar
 **`simulate_population_history_Jibrila_et_al_2020.R`**
 - This script simulates a historic population as described in [Jibrila et al. \(2020\)](https://doi.org/10.1186/s12711-020-00562-6). Comments are made in the script. In brief, a random mating population is simulated over 3000 generations with changes in population size. This script could run on my laptop and needed some hours to finish.
 
+**Optimum Genetic Contribution considering the numbe rof to be selected parents**
+- The code and scripts for thsi investigation are in the folder `OGC_number_of_parents_script`. I compare different strategies using optimum contributions as a criterion to make selection decisions when only a limited number of parents can be selected for the next generation. I am using [optiSel](https://cran.r-project.org/web/packages/optiSel/index.html). The number of parents is considered by calculating OC for all selection candidates and then remove the animal with the lowest OC. Then, optimum contributions are recalculated and again the animal with the lowest OC is removed. This is repeated until only the desired number of animals remains with non-zero contributions. I implemented this is a wrapper function. <br/>
+Since this one-by-one removal can take some time, I also wrote an algorithm that significantly speeds up the process by removing more than one animal at a time. The script uses the excel sheet as an input file. You can change the nuber of selected parents, whether EBV should be maximised or kinship minimized, a minimum genetic gain or maximum inbreeding increase (by specifying ne) and more. OGC styles are 1) selection based on BV and contributions of selected animals are optimized, 2) optimum contributions are calculated for all animals and animals with highest contributions are selected and 3) the iterative approach of recalculating contributions and removing one animal every iteration.<br/>
+An `.sh` is provided so that analysis could be run on a cluster.<br/>
+Some findings based on this script were presented on 14.10.2022 at the CiBreed conference in Göttingen.<br/>
+`Note:` tools like [AlphaMate](https://alphagenes.roslin.ed.ac.uk/wp/software-2/alphamate/) or [mateSel](https://www.matesel.com/) use an evolutionary algorithm to find the best solution and can consider the number of to be selected parents as a constraint directly.
+
+![inbreeding_OGC_strategies](https://github.com/tobiasniehoff/exploring_MoBPS/blob/main/ptab9%201251-1500%20wo%202.2%20inbreeding.png)
 
 ## Functions
-This folder contains functions made for and/or with MoBPS. Some functionality may be incorporated in future MoBPS versions. The fuctions are described more in the file. Examples are given at the end of function definitions.
+This folder contains functions made for and/or with MoBPS. Some functionality may be incorporated in future MoBPS versions. The fuctions are described more in the file. Examples are given at the end of function definitions.<br/>
+**Functionality for the Optimum Genetic Contribution script can be found under Scripts -> OGC_number_of_parents_script -> `functions_for_OGC_script.R`**
+
 
 **`get.direct.ancestors()`**
 - Gives you a pedigree containing all ancestors up to a given number of generations back. 
@@ -133,6 +148,8 @@ If no solver works or you don't want to wait, my personal suggestion is to use t
 **`get.breed.proportion()`**
 - This function checks what proportion of the genome of an animal is derived from a specific group of founders. If the group of founder is chosen to contain all but only animals from a certain breed/poplation, the value given as output is the breed proportion. The function only works if the animals in group 2 contain only founder animals.
 
+<!-- 
+https://gist.github.com/jonikarppinen/47dc8c1d7ab7e911f4c9
 ## General remarks
 -Simulation tools, also MoBPS, offer the user to input heritabilities which is then used together with either the environmental or the genetic variance to derive the genetic or the environmental variance, respectively. This is coming from a way of thinking that that a heritability is a property of a trait. However, a heritability is a property of the environment AND the population. This is important in simulations when following a population over generations. Assume your breeding program is constantly increasing a trait. Assume the heritability was estimated based on a single generation and this is the heritability you want to use in simulation or e.g. phenotypes. 
 There are two problems:
@@ -141,3 +158,4 @@ There are two problems:
 
 Sidenote: I am currently pondering about environmental variances. Imagine this: Your population has quite a low mean, say 10. The environmental standard deviation in this population is, say 4. After many generations, the trait was increased to 10,000. Would the population then still have an environmental sd of 4 or would it increase? 
 The question behind this is whether the variance is relative to the tbv or not. If you know the answer or have experience, please contact me.
+-->
