@@ -12,7 +12,7 @@ Example scipts and additional functions using [MoBPS](https://github.com/tpook92
 This respository is meant to share scripts and functions that have been built with and/or for MoBPS. Contributions will mostly be related to animal breeding. I will upload something every now and then from my own projects. I do not guarantee that code will work as described or intended and always recommend testing it for your own purposes.
 
 There are 3 sections in this repo:
-- **Exercises**: Here you cna find exercises for practice. Th ecorresponding folder contains my solutions.
+- **Exercises**: Here you can find exercises for practice. Th ecorresponding folder contains my solutions.
 - **Scripts**: Here you can find scripts of my previous projects or examples for some implementations.
 - **Functions**: Here, only the folder is relevant. You can find functions that extend the functionality of MoBPS.
 <!--
@@ -112,14 +112,31 @@ This method is complicated. Compatibility with other MoBPS functions is not guar
 **`simulate_population_history_Jibrila_et_al_2020.R`**
 - This script simulates a historic population as described in [Jibrila et al. \(2020\)](https://doi.org/10.1186/s12711-020-00562-6). Comments are made in the script. In brief, a random mating population is simulated over 3000 generations with changes in population size. This script could run on my laptop and needed some hours to finish.
 
-**Optimum Genetic Contribution considering the numbe rof to be selected parents**
-- The code and scripts for thsi investigation are in the folder `OGC_number_of_parents_script`. I compare different strategies using optimum contributions as a criterion to make selection decisions when only a limited number of parents can be selected for the next generation. I am using [optiSel](https://cran.r-project.org/web/packages/optiSel/index.html). The number of parents is considered by calculating OC for all selection candidates and then remove the animal with the lowest OC. Then, optimum contributions are recalculated and again the animal with the lowest OC is removed. This is repeated until only the desired number of animals remains with non-zero contributions. I implemented this is a wrapper function. <br/>
+**Optimum Genetic Contribution considering the number of to be selected parents**
+- The code and scripts for this investigation are in the folder `OGC_number_of_parents_script`. I compare different strategies using optimum contributions as a criterion to make selection decisions when only a limited number of parents can be selected for the next generation. I am using [optiSel](https://cran.r-project.org/web/packages/optiSel/index.html). The number of parents is considered by calculating OC for all selection candidates and then remove the animal with the lowest OC. Then, optimum contributions are recalculated and again the animal with the lowest OC is removed. This is repeated until only the desired number of animals remains with non-zero contributions. I implemented this is a wrapper function. <br/>
 Since this one-by-one removal can take some time, I also wrote an algorithm that significantly speeds up the process by removing more than one animal at a time. The script uses the excel sheet as an input file. You can change the nuber of selected parents, whether EBV should be maximised or kinship minimized, a minimum genetic gain or maximum inbreeding increase (by specifying ne) and more. OGC styles are 1) selection based on BV and contributions of selected animals are optimized, 2) optimum contributions are calculated for all animals and animals with highest contributions are selected and 3) the iterative approach of recalculating contributions and removing one animal every iteration.<br/>
 An `.sh` is provided so that analysis could be run on a cluster.<br/>
 Some findings based on this script were presented on 14.10.2022 at the CiBreed conference in Göttingen.<br/>
 `Note:` tools like [AlphaMate](https://alphagenes.roslin.ed.ac.uk/wp/software-2/alphamate/) or [mateSel](https://www.matesel.com/) use an evolutionary algorithm to find the best solution and can consider the number of to be selected parents as a constraint directly.
 
 ![inbreeding_OGC_strategies](https://github.com/tobiasniehoff/exploring_MoBPS/blob/main/ptab9%201251-1500%20wo%202.2%20inbreeding.png)
+
+**Integrating physical marker postions (bp) into genetic positions (Morgan)**
+- The script is in the folder `Integrating genetic map`. The genetic map needs to be downloaded from supplemenatry material of [Groenen et al. \(2009\)](10.1101/gr.086538.108): A high-density SNP-based linkage map of the chicken genome reveals sequence features correlated with recombination rate.
+- I used MoBPS version 1.11.40
+- This script contains functionality to derive genetic positions (in Morgan) for markers for which only physical positions (in bp) are available. In this example, I am using the genetic map estimated for chicken by [Groenen et al. \(2009\)](10.1101/gr.086538.108). That map contains 8621 markers on autosomes. I want to derive genetic positions for 600K SNPs that are on the Affymetrix Chicken600K Array (can be found in the packge MoBPSmaps `MoBPSmaps::map_chicken1`). The MoBPS manual recommends a conversion factor of 30.000.000 bp per Morgan for chicken but this not reflecting chromosome or region specific differences in recombination rate. That conversion can differ between chromosomes can be visualized by plotting the physical length (bp) per genetic length (M) of every chromosome based on teh daa provided by [Groenen et al. \(2009\)](10.1101/gr.086538.108) (chromosome 16 and 25 have no height because not enough SNPs were left after quality checking to estimate length reliably).<br/>
+![chromosome specific vonversion factor](https://github.com/tobiasniehoff/exploring_MoBPS/blob/main/scripts/Integrating_genetic_map/chromosome_specific_conversion_fatcor.png)
+
+- So, I would like to be as accurate as possible by estimating a conversion function based on the genetic map by [Groenen et al. \(2009\)](10.1101/gr.086538.108). This works by estimating a linear line between every pair of markers with function `stats::splinefun()`, method `hyman`. The plot below shows such a conversion function for chromosome 15.<br/>
+![estimated spline function](https://github.com/tobiasniehoff/exploring_MoBPS/blob/main/scripts/Integrating_genetic_map/positions_groenen.png)
+
+- Once this conversion function is estimated, the physical positions can be provided as input and the genetic position will be assigned based on the estimated function.<br/>
+![added_600K_SNPs](https://github.com/tobiasniehoff/exploring_MoBPS/blob/main/scripts/Integrating_genetic_map/added_600K_SNPs.png)
+
+- The function `function.bp.Morgan()` (provided in the script) also does some quality control. Duplicated SNPs are removed, SNPs with rank issues are removed (bp rank higher than M rank) and outliers are removed. For example, there are a couple of SNPs on chromosome 22 whose Morgan position does not match with the Morgan position of SNPs that are neighbors on the bp scale (plot below). This could be because the ranking (genome build) of the physical map is incorrect. Here, I remove them by estimating a linear regression line and removing points that deviate by more than 4 OR the SD that corresponds to 1/(number SNPS chromosome quantile standard deviations (whichever is larger) from the prediction. For chromosome 22, this means that the outlier SNPs at around 0.4 M are removed.<br/>
+![added_600K_SNPs](https://github.com/tobiasniehoff/exploring_MoBPS/blob/main/scripts/Integrating_genetic_map/chrom22_raw.png)
+
+- Functionality to integrate SNPs that are beyond the range of the template genetic map is also implemented as well as functionality that assigns genetic positions purely based on a predefined conversion factor.
 
 ## Functions
 This folder contains functions made for and/or with MoBPS. Some functionality may be incorporated in future MoBPS versions. The fuctions are described more in the file. Examples are given at the end of function definitions.<br/>
