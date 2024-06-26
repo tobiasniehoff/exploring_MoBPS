@@ -40,6 +40,7 @@ install.packages("RandomFieldsUtils_1.0.6.tar.gz", repos = NULL, type = "source"
 install.packages("miraculix_1.0.5.tar.gz", repos = NULL, type = "source")
 ```
 **NOTE** MoBPS is continously updated. Thus, some scripts may not work with a certain version of MoBPS. I try my best to always mention the version with which a script was tested in the `.R` files.
+**NOTE** MoBPS, RandomFieldsUtils and miraculic do **NOT** work in R versions **`R4.3.1+`** (status 26.06.2024). To my knowledge, Torsten Pook and Martin Schlather (the developer of RandomFieldUtils and miraculix) is working on this.
 
 ## Exercises
 The excercises in this section are partially my own or from the MoBPS workshop by Torsten Pook. Code, solutions and comments are my own. Note that there is not one solution only to implement a program in MoBPS.
