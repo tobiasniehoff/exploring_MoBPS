@@ -102,6 +102,10 @@ You will learn how to use offspring phenotypes. This is useful in cases the anim
 ## Scripts
 This is a collection of scripts of things you can do with MoBPS.
 
+**`short_introduction_MoBPS.R`**
+- This script gives a short introduction into MoBPS and shows aspects one is often interested in such as correlated traits, different breeding value estimation methods and a simple breeding scheme with overlapping generations. It is meant for people just starting with MoBPS.<br/>
+![Age_proportion_parents](https://github.com/tobiasniehoff/exploring_MoBPS/blob/main/Age_proportion_parents.png)
+
 **`cross_breeding_breed_specifc_effects.R`**
 - In this script, I explore how one can simulate crossbreeding when the known effect sizes for alleles differ per breed/population. This is the case when they are estimated separately per breed (i.e., the effect size of allele A in breed A is different from the effect size of allele A in breed B) and one wants to use the "real" estimated allele effects as input for simulation. The way this is implemented here, is by placing a SNP for breed A on the same position as for breed B. Note that for this only the genetic position (cM), not the physical position (bp) matters. Thus, an animal can only have one allele at a locus - either the one from breed A or from breed B because no recombination can happend between them. Then, the allele frequency for the SNP from breed B is set to 0 in breed A animals and vice versa. In breeding value evalutations, an array conataining both SNPs is needed. For other genomic evaluations, make sure you use the appropriate marker array.<br/>
 Note that MoBPS does not have a built in strategy to consider the breed-origin-of-alleles in breeding value estimation. For an extensive review on considering crossbreed data in genomic prediction (also covering the inclusion of the breed-of-origin for alleles), please see [Duenk et al. \(2021\)](https://doi.org/10.1093/jas/skab205).<br/>
